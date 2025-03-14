@@ -10,13 +10,24 @@ const loadCategories = async () => {
   }
 };
 
+const activeClassRemove = () => {
+  const activeBtns = document.querySelectorAll(".active");
+  activeBtns.forEach((activeBtn) => {
+    activeBtn.classList.remove("active");
+  });
+};
+
 const loadCategoryVideos = async id => {
      try {
     const response = await fetch(
       `https://openapi.programming-hero.com/api/phero-tube/category/${id}`
          );
-    const data = await response.json();
+       const data = await response.json();
+       activeClassRemove()
+       const clickedButton = document.getElementById(`btn-${id}`);
+       clickedButton.classList.add('active')
    displayVideos(data.category);
+    
   } catch (error) {
     console.error("Error fetching categories:", error);
   }
@@ -27,7 +38,7 @@ const displayCategories = categories => {
     categories.forEach(category => {
         const categoryDiv = document.createElement('div')
         categoryDiv.innerHTML = `
-    <button onclick='loadCategoryVideos(${category.category_id})' class="btn btn-sm hover:bg-[#FF1F3D]  hover:text-white">${category.category}</button>
+    <button id='btn-${category.category_id}' onclick='loadCategoryVideos(${category.category_id})' class="btn btn-sm hover:bg-[#FF1F3D]  hover:text-white">${category.category}</button>
     `;
         categoryContainer.append(categoryDiv)
     });
@@ -40,7 +51,10 @@ const loadVideos = async () => {
       "https://openapi.programming-hero.com/api/phero-tube/videos"
     );
     const data = await response.json();
-   displayVideos(data.videos);
+     activeClassRemove();
+     const clickedButton = document.getElementById("btn-all");
+     clickedButton.classList.add("active");
+    displayVideos(data.videos);
   } catch (error) {
     console.error("Error fetching categories:", error);
   }
@@ -49,6 +63,20 @@ const loadVideos = async () => {
 const displayVideos = videos => {
     const videoContainer = document.getElementById("video-container");
     videoContainer.innerHTML = ''
+
+  if (videos.length === 0) {
+    videoContainer.innerHTML = `
+      <div
+        class="py-20 col-span-full flex flex-col justify-center items-center text-center"
+      >
+        <img class="w-[120px]" src="Icon.png" alt="" />
+        <h2 class="text-2xl font-bold">
+          Oops!! Sorry, There is no content here
+        </h2>
+      </div>
+    `;
+    return
+  }
 
     videos.forEach(video => {
         const videoDiv = document.createElement('div')
