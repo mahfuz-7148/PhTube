@@ -46,11 +46,14 @@
               </g>
             </svg>
             <input
-              id="search-input"
+              id="searchInput"
               type="search"
               required
               placeholder="Search"
             />
+
+          
+
           </label>
         </div>
         <div class="blogs">
@@ -80,7 +83,8 @@
 
     <!-- Open the modal using ID.showModal() method -->
     <!-- <button class="btn" onclick="my_modal_1.showModal()">open modal</button> -->
-    <dialog id="video_details" class="modal">
+    <div id="modal-container">
+      <dialog id="video_details" class="modal">
       <div class="modal-box">
         <div id="details-container"></div>
 
@@ -92,6 +96,7 @@
         </div>
       </div>
     </dialog>
+    </div>
 
     <script src="script.js"></script>
   </body>

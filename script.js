@@ -1,3 +1,11 @@
+const showLoader = () => {
+    document.getElementById("loader").classList.remove("hidden");
+}
+const hideLoader = () => {
+    document.getElementById("loader").classList.add("hidden");
+}
+
+
 const loadCategories = async () => {
   try {
     const response = await fetch(
@@ -10,6 +18,36 @@ const loadCategories = async () => {
   }
 };
 
+const showDetailsModal = async (videoId) => {
+  const modalContainer = document.getElementById("modal-container");
+  // modalContainer.innerHTML = "";
+  const response = await fetch(
+    `https://openapi.programming-hero.com/api/phero-tube/video/${videoId}`
+  );
+  const data = await response.json();
+  const video = data.video;
+
+  modalContainer.innerHTML = `
+  <dialog id="details_modal" class="modal">
+    <div class="modal-box">
+    <h3 class="text-lg font-bold">${video.title}</h3>
+    <div class="w-[200px] my-3">
+        <img src="${video.thumbnail}" alt="" />
+    </div>
+    <p class="py-4">${video.description}</p>
+    <div class="modal-action">
+        <form method="dialog">
+        <!-- if there is a button in form, it will close the modal -->
+        <button class="btn">Close</button>
+        </form>
+    </div>
+    </div>
+</dialog>
+  `;
+
+  document.getElementById("details_modal").showModal();
+};
+
 const activeClassRemove = () => {
   const activeBtns = document.querySelectorAll(".active");
   activeBtns.forEach((activeBtn) => {
@@ -17,15 +55,17 @@ const activeClassRemove = () => {
   });
 };
 
-const loadCategoryVideos = async id => {
+const loadCategoryVideos = async (id) => {
+
      try {
     const response = await fetch(
       `https://openapi.programming-hero.com/api/phero-tube/category/${id}`
          );
        const data = await response.json();
-       activeClassRemove()
-       const clickedButton = document.getElementById(`btn-${id}`);
-       clickedButton.classList.add('active')
+      //  console.log(data.category)
+  //      activeClassRemove()
+  //      const clickedButton = document.getElementById(`btn-${id}`);
+  //      clickedButton.classList.add('active')
    displayVideos(data.category);
     
   } catch (error) {
@@ -45,10 +85,11 @@ const displayCategories = categories => {
 
 }
 
-const loadVideos = async () => {
+const loadVideos = async (searchText = "") => {
+ 
   try {
     const response = await fetch(
-      "https://openapi.programming-hero.com/api/phero-tube/videos"
+      `https://openapi.programming-hero.com/api/phero-tube/videos?title=${searchText}`
     );
     const data = await response.json();
      activeClassRemove();
@@ -75,6 +116,7 @@ const displayVideos = videos => {
         </h2>
       </div>
     `;
+  
     return
   }
 
@@ -123,13 +165,21 @@ const displayVideos = videos => {
           </div>
 
         </div>
-        <button class="btn btn-block">Show Details</button>
+        <button onclick="showDetailsModal('${
+          video.video_id
+        }')" class="btn btn-block">Show Details</button>
       </div>
         `;
          videoContainer.append(videoDiv);
     })
+ 
 }
     
+
+document.getElementById("searchInput").addEventListener('keyup', e => {
+  const input = e.target.value
+  loadVideos(input);
+})
     
     
     
