@@ -353,12 +353,15 @@ const initApp = async () => {
   }
 };
 
-// Start the app when DOM is ready
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", initApp);
-} else {
-  initApp();
-}
+// ❌ REMOVE THIS ENTIRE BLOCK - Not needed with defer!
+// if (document.readyState === "loading") {
+//   document.addEventListener("DOMContentLoaded", initApp);
+// } else {
+//   initApp();
+// }
+
+// ✅ Just call directly - defer guarantees DOM is ready
+initApp();
 
 // Add fadeOut animation
 const style = document.createElement("style");
